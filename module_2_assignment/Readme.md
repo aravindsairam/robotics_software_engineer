@@ -1,26 +1,63 @@
 # Assignments for Module #2 : ROS2 2D Turlesim Simulation
-- Create all files in *module_2_assignment* package
+## Assignment 1: Custom Nodes and Launch Files
 
-### Assignment 1: Custom Nodes and Launch Files
-- **Objective**: Develop ability to write custom ROS2 nodes and use launch files for running multiple nodes.
-- **Tasks**:
-Create a custom ROS2 node that makes the
-- Turtlesim follow a unique pattern
-    - Move in user input radius of circle
-    - Move the turtle in logrithmic spiral
-Develop a launch file to run the Turtlesim simulation and the custom node simultaneously.
-Document the node and launch file creation process, including code and execution results.
-- **Learning Outcome**: Understand the development and execution of custom nodes and the utility of launch files in ROS2.
+### Move in user input radius of circle
 
-### Assignment 2: Exploring Turtlesim Services and Parameters
-- **Objective**: Concepts of services and parameters in ROS2 using the Turtlesim simulation.
-- **Tasks**:
-Use existing Turtlesim services (e.g., spawn, clear) to modify the simulation environment.
-    - Spawn 5 Turtlebots with 1 single launch file in Diagonal from top to bottom.
-    - Drive middle 3 turtles back and forth continuosly
-Modify the behavior of the Turtlesims using ROS2 parameters
-    - change the speed of the turtles
-- **Learning Outcome**: Learn how to interact with ROS2 services and parameters to alter node behavior and simulation environments.
+To Run:
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 run draw_circle 0.5 # where 0.5 is the user input radius
+```
 
-### Document :
-- Create another readme file to guide on how to run your package
+### Move the turtle in simple/archimedean spiral (just for my understanding)
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 run draw_spiral
+```
+
+### Move the turtle in log spiral
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 launch module_2_assignment unique_pattern.launch.py
+```
+
+
+## Assignment 2: Exploring Turtlesim Services and Parameters
+
+
+### Spawn 5 Turtlebots with 1 single launch file in Diagonal from top to bottom | Drive middle 3 turtles back and forth continuosly
+
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 launch module_2_assignment spawn_multi_turtle.launch.py
+```
+
+### Modify the behavior of the Turtlesims using ROS2 parameters | change the speed of the turtles
+
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 launch module_2_assignment control_turtle_speeds.launch.py
+
+# To change the speeds dynamically
+
+# First check the node list
+$ ros2 node list
+
+# Get the node params list (example below)
+$ ros2 param list /speed_change_1
+
+# get the specific param value in a node
+$ ros2 param get /speed_change_1 linear_x
+
+# set the linear veloicty param of node /speed_change_1
+$ ros2 param set /speed_change_1 linear_x 0.5
+
+# set the angular veloicty param of node /speed_change_1
+$ ros2 param set /speed_change_1 angular_z 0.5
+
+```

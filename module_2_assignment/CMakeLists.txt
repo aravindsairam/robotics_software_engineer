@@ -7,9 +7,41 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+
+add_executable(draw_circle src/draw_circle.cpp)
+ament_target_dependencies(draw_circle rclcpp geometry_msgs)
+
+add_executable(draw_spiral src/draw_spiral.cpp)
+ament_target_dependencies(draw_spiral rclcpp geometry_msgs)
+
+add_executable(draw_logspiral src/draw_logspiral.cpp)
+ament_target_dependencies(draw_logspiral rclcpp geometry_msgs)
+
+add_executable(drive_robot src/drive_robot.cpp)
+ament_target_dependencies(drive_robot rclcpp geometry_msgs)
+
+add_executable(change_speed src/control_speeds.cpp)
+ament_target_dependencies(change_speed rclcpp geometry_msgs)
+
+install(TARGETS
+  draw_circle
+  draw_spiral
+  draw_logspiral
+  drive_robot
+  change_speed
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install launch files.
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
