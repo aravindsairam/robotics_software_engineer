@@ -49,14 +49,9 @@
     <xacro:wheel name="rear_left" x="-0.25" y="0.25" parent="base_link"/>
 
     <link name="front_steer">
-        <visual>
-            <geometry>
-                <box size="0.1 0.1 0.02"/>
-            </geometry>
-            <material name="gray"/>
-        </visual>
     </link>
 
+    <!-- 7 degree = 0.1122173 rad (upper and lower limit) -->
     <joint name="front_steer_joint" type="revolute">
         <parent link="base_link"/>
         <child link="front_steer"/>
