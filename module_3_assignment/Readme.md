@@ -1,21 +1,44 @@
 # Assignments for Module #3 : Robot structure with URDF
-- Create all files in *module_3_assignment* package
-
 
 ### Assignment 1: Robotic Arm Creation using TF
-- **Tasks**:
-Create a custom transform tree for a
-    - Robotics arm of 3 DOF without body ( only transforms)
-    - visualize it in rviz + utilize joint state publisher GUI to see transforms
-    - You should not have any visualize tag filled yet.
+
+Note: Assignment 1 and 2, the launch file is the same.
+
+In this task, the TFs for robotic arm is created with an urdf file.
+
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 launch module_3_assignment arm_urdf.launch.py
+```
+![](gifs/task_1.gif)
+
+
 ### Assignment 2: Joints Understanding
-- **Tasks**:
-Add joints to the same Robotic Arm that you created earlier
-    - Finger joints with prismatic joint type
-    - Have base joint as continous
-    - All other joints should be Revolute
-    - Add visualize tag to your robot urdf and create body mostly using cylinders
+
+In this task, the TFs have visual elements and materials to it. This is done by adding a "visual" tag in the link elements of the urdf file.
+
+![](gifs/task_2.gif)
+
+
 ### Assignment 3: Building Mobile Manupilator
-- **Tasks**:
-Put your robotic arm on top of different drive robot
-    - Connect using base_link of diff bot.
+
+In this task, the robotic arm is place of top of a differential drive robot.
+
+#### Assignment 3.1
+![](gifs/task_3.gif)
+
+
+#### Assignment 3.2
+
+In this task, a ackerman drive robot is simulated in rviz using an urdf file. 
+
+```
+$ cd ~/assignment_ws
+$ colcon build && source install/setup.bash
+$ ros2 launch module_3_assignment ackerman_urdf.launch.py
+```
+![](gifs/task_4.gif)
+
+
+All the urdf files in this module uses xacro for better code formatting, readability and for reduce the code repetition. 

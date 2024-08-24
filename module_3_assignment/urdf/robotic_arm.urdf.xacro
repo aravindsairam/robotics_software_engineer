@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="robotic_arm">
+
+
+    <link name="base_footprint">
+    </link>
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.75 0.40 0.1"/>
+            </geometry>
+            <material name="gray">
+                <color rgba="0.2 0.2 0.2 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+    </joint>
+
+
+    <!-- xacro for wheels  -->
+    <xacro:macro name="wheel" params="name x y">
+        <link name="wheel_${name}">
+            <visual>
+                <geometry>
+                    <cylinder radius="0.15" length="0.1"/>
+                </geometry>
+                <material name="white">
+                    <color rgba="1 1 1 1"/>
+                </material>
+            </visual>
+        </link>
+
+        <joint name="${name}_wheel_joint" type="continuous">
+            <origin xyz="${x} ${y} 0.0" rpy="1.57 0.0 0.0"/>
+            <parent link="base_link"/>
+            <child link="wheel_${name}"/>
+            <axis xyz="0.0 0.0 1.0"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:wheel name="left" x="0.2" y="-0.25"/>
+    <xacro:wheel name="right" x="0.2" y="0.25"/>
+
+    <link name="caster">
+        <visual>
+            <geometry>
+                <sphere radius="0.08"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+    </link>
+
+    <link name="arm_base">
+        <visual>
+            <geometry>
+                <cylinder length="0.1" radius="0.15"/>
+            </geometry>
+            <material name="white">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="shoulder">
+        <visual>
+            <geometry>
+                <cylinder length="0.5" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.25" rpy="0.0 0.0 0.0"/>
+            <material name="gray">
+                <color rgba="0.2 0.2 0.2 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="elbow">
+        <visual>
+            <geometry>
+                <cylinder length="0.75" radius="0.05"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.375" rpy="0.0 0.0 0.0"/>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="wrist">
+        <visual>
+            <geometry>
+                <sphere radius="0.06"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- xacro for fingers  -->
+    <xacro:macro name="finger" params="name origin_x lower upper">
+
+        <link name="finger_${name}">
+            <visual>
+                <geometry>
+                    <box size="0.02 0.02 0.20"/>
+                </geometry>
+                <origin xyz="0.0 0.0 0.10" rpy="0.0 0.0 0.0"/>
+                <material name="gray">
+                    <color rgba="0.2 0.2 0.2 1"/>
+                </material>
+            </visual>
+        </link>
+
+        <joint name="finger_${name}_joint" type="prismatic">
+            <origin xyz="${origin_x} 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <parent link="wrist"/>
+            <child link="finger_${name}"/>
+            <axis xyz="1.0 0.0 0.0"/>
+            <limit lower="${lower}" upper="${upper}" effort="10.0" velocity="10.0"/>
+        </joint>
+
+    </xacro:macro>
+
+    <xacro:finger name="lower" origin_x="-0.05" lower="0.0" upper="0.05"/>
+    <xacro:finger name="upper" origin_x="0.05" lower="-0.05" upper="0.0"/>
+
+
+    <!-- xacro for fixed and continous joints  -->
+    <xacro:macro name="fixed_continuous" params="name x y z joint parent">
+
+        <joint name="${name}_joint" type="${joint}">
+            <origin xyz="${x} ${y} ${z}" rpy="0.0 0.0 0.0"/>
+            <parent link="${parent}"/>
+            <child link="${name}"/>
+            <axis xyz="0.0 0.0 1.0"/>
+        </joint>
+
+    </xacro:macro>
+
+    <xacro:fixed_continuous name="arm_base" x="0.0" y="0.0" z="0.05" joint="fixed" parent="base_link"/>
+    <xacro:fixed_continuous name="shoulder" x="0.0" y="0.0" z="0.05" joint="continuous" parent="arm_base"/>
+    <xacro:fixed_continuous name="caster" x="-0.3" y="0.0" z="-0.07" joint="continuous" parent="base_link"/>
+
+    <!-- xacro for revolute joints  -->
+    <xacro:macro name="revolute" params="name z lower upper parent">
+
+        <joint name="${name}_joint" type="revolute">
+            <origin xyz="0.0 0.0 ${z}" rpy="0.0 0.0 0.0"/>
+            <parent link="${parent}"/>
+            <child link="${name}"/>
+            <axis xyz="1.0 0.0 0.0"/>
+            <limit lower="${lower}" upper="${upper}" effort="10.0" velocity="10.0"/>
+        </joint>
+
+    </xacro:macro>
+
+    <xacro:revolute name="elbow" z="0.5" lower="-2.0944" upper="2.0944" parent="shoulder"/>
+    <xacro:revolute name="wrist" z="0.75" lower="-3.14" upper="3.14" parent="elbow"/>
+
+
+</robot>
