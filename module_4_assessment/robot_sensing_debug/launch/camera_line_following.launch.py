@@ -30,11 +30,16 @@ def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    x_pose = LaunchConfiguration('x_pose', default='-9.09')
-    y_pose = LaunchConfiguration('y_pose', default='2.07')
+    # pose x is somewhere outside the line path - changing -9.09 to -5.889942
+    # y pose from 2.07 to 2.103010
+    x_pose = LaunchConfiguration('x_pose', default='-5.889942')
+    y_pose = LaunchConfiguration('y_pose', default='2.103010')
 
+    # changed robot_sensing to robot_sensing_debug
+    # line_following.world have meshes pointing to the wrong path
+    # changed the .dae files to the correct path
     world = os.path.join(
-        get_package_share_directory('robot_sensing'),
+        get_package_share_directory('robot_sensing_debug'),
         'worlds',
         'line_following.world'
     )
@@ -59,18 +64,25 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': use_sim_time}.items()
     )
 
+    # no launch file named spawn_tb3.launch.py in the turtlebot3_gazebo package
+    # it is spawn_turtlebot3.launch.py
+    # x and y pose in launch arguments are missing 
     spawn_turtlebot_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(launch_file_dir, 'spawn_tb3.launch.py')
-        )
+            os.path.join(launch_file_dir, 'spawn_turtlebot3.launch.py')
+        ),
+        launch_arguments={
+            'x_pose': x_pose,
+            'y_pose': y_pose
+        }.items()
     )
 
-    line_following = Node(
-        package = 'robot_sensing',
-        name = 'line_following',
-        executable ='lineFollowing',
+    # line_following = Node(
+    #     package = 'robot_sensing',
+    #     name = 'line_following',
+    #     executable ='lineFollowing',
 
-    )
+    # )
 
     ld = LaunchDescription()
 
@@ -79,6 +91,6 @@ def generate_launch_description():
     ld.add_action(gzclient_cmd)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
-    ld.add_action(line_following)
+    # ld.add_action(line_following)
 
     return ld
