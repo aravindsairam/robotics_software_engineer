@@ -15,13 +15,10 @@ def generate_launch_description():
     x_pose = LaunchConfiguration('x_pose', default='-9.970165')
     y_pose = LaunchConfiguration('y_pose', default='4.015436')
 
-    # x_pose = LaunchConfiguration('x_pose', default='-4.989208')
-    # y_pose = LaunchConfiguration('y_pose', default='-2.982065')
-
     world = os.path.join(
         get_package_share_directory('module_4_assignment'),
         'worlds',
-        'square_maze.world', #'square_maze.world'
+        'square_maze.world',
     )
 
     gzserver_cmd = IncludeLaunchDescription(

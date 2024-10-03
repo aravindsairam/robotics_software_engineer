@@ -33,9 +33,9 @@ class WallFollowing : public rclcpp::Node
         // get lidar data for the front, left and right side of the robot
         void anayseLidarData(const sensor_msgs::msg::LaserScan::SharedPtr msg)
         {
-            // get 0-20 and 340-360 degrees for the front side of the robot
-            float _frontScanAvg_1 = *std::min_element(msg->ranges.begin(), msg->ranges.begin() + 20);
-            float _frontScanAvg_2 = *std::min_element(msg->ranges.begin()+340, msg->ranges.begin() + 360);
+            // get 0-10 and 350-360 degrees for the front side of the robot
+            float _frontScanAvg_1 = *std::min_element(msg->ranges.begin(), msg->ranges.begin() + 10);
+            float _frontScanAvg_2 = *std::min_element(msg->ranges.begin()+350, msg->ranges.begin() + 360);
             // get the minimum value of the front side of the robot
             _frontScanAvg = std::min(_frontScanAvg_1, _frontScanAvg_2);
             // get 70-90 degrees for the left side of the robot
@@ -57,15 +57,28 @@ class WallFollowing : public rclcpp::Node
                     }
                     else
                     {
-                        if (_frontScanAvg > _maxFrontDist && _leftScanAvg > _maxLeftDist && _rightScanAvg > _maxRightDist)
+                        if (_frontScanAvg  > _minFrontDist && _rightScanAvg > _minRightDist)
                         {
-                            _state = Direction::MOVING_RIGHT;
+                            if (_frontScanAvg > _maxFrontDist && _leftScanAvg > _maxLeftDist && _rightScanAvg > _minRightDist)
+                            {
+                                _state = Direction::MOVING_RIGHT;
+                            }
+                            else if (_frontScanAvg  > _minFrontDist && _rightScanAvg > _maxRightDist) 
+                            {
+                                if (_leftScanAvg > _minLeftDistBound && _leftScanAvg < _maxLeftDistBound)
+                                    {
+                                        _state = Direction::MOVING_RIGHT;
+                                    }
+                                else
+                                    {
+                                        _state = Direction::MOVING_FORWARD;
+                                    }
+                            }
                         }
                         else 
                         {
                             if (_frontScanAvg < _minFrontDist)
                             {
-                                RCLCPP_INFO(this->get_logger(), "in _frontScanAvg < _minFrontDist condition");
                                 if (_rightScanAvg > _leftScanAvg)
                                 {
                                     _state = Direction::MOVING_RIGHT;
@@ -77,7 +90,6 @@ class WallFollowing : public rclcpp::Node
                             }
                             else
                             {
-                                RCLCPP_INFO(this->get_logger(), "_frontScanAvg: %f, _minFrontDist: %f", _frontScanAvg, _minFrontDist);
                                 _state = Direction::MOVING_FORWARD;
                             }
                         }
@@ -133,11 +145,13 @@ class WallFollowing : public rclcpp::Node
         float _frontScanAvg, _leftScanAvg, _rightScanAvg;
 
         float _minFrontDist = 1.0;
-        float _minLeftDist = 1.0;
-        float _minRightDist = 1.0;
+        float _minLeftDistBound = 0.4;
+        float _minRightDist = 1.50;
+        
+        float _maxLeftDistBound = 3.50; 
         float _maxFrontDist = 3.5;
-        float _maxLeftDist = 1.0; //1.50;(1 and 1.5 is working)
-        float _maxRightDist = 1.50;
+        float _maxLeftDist = 1.0; 
+        float _maxRightDist = 2.3;
         
         float _StopDistance = 3.5;
         float _linearVel = 0.5;

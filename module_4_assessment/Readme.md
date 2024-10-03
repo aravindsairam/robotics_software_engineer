@@ -29,7 +29,12 @@ Create a maze in gazebo to perform wall following
     - Should create an envionrment of sqaure shape
     - Robot will keep the structure on its right
 
+
+Example run 1: (only for visualization)
 ![](gifs_imgs/wall_following.gif)
+
+Example run 2:
+![](gifs_imgs/wall_following_2.gif)
 
 To Run:
 ```
@@ -50,6 +55,10 @@ To Run:
 $ cd assignment_ws
 $ colcon build && source install/setup.bash
 $ ros2 launch module_4_assignment get_imu_data.launch.py
+# open cmd_vel controller in another terminal to check the values of Velocity and Acceleration from IMU message
+$ ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# or 
+$ ros2 run rqt_robot_steering rqt_robot_steering
 ```
 
 ### Assignment 4: Debug the package
